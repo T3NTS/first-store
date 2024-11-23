@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { FaPlus, FaMinus  } from "react-icons/fa";
+import { CiTrash } from "react-icons/ci";
+import { HiOutlineXMark } from "react-icons/hi2";
+
 
 
 const CartItem = (props) => {
@@ -33,7 +36,7 @@ const CartItem = (props) => {
   return (
     <div className="flex bg-slate-950">
       {productInfo && (
-        <div className="grid p-4 grid-cols-4 items-center">
+        <div className="grid p-4 items-center grid-cols-[1fr_1fr_1fr_1fr_auto]">
             <img className="w-48 md:h-28 lg:w-108 lg:h-56 object-cover rounded-xl" src={productInfo.imageURL}/>
             <div className="flex px-4">
               <h3 className="flex h-full text-gray-400 text-lg font-semibold">{productInfo.name}</h3>
@@ -55,8 +58,13 @@ const CartItem = (props) => {
                 <FaMinus className="text-slate-950"/>
               </button>
             </div>
-            <div className="flex px-4 text-gray-400 text-lg font-semibold">
-              <h3 className="flexh-full">${productInfo.price}</h3>
+            <div className="flex">
+              <h3 className="flex h-full text-gray-400 text-lg font-semibold">${productInfo.price}</h3>
+            </div>
+            <div className="flex px-4 p-4">
+              <button className="flex text-gray-200 text-lg font-semibold ">
+                <HiOutlineXMark className="w-8 h-8"/>
+              </button>
             </div>
           </div>
       )}

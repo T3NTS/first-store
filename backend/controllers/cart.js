@@ -38,7 +38,25 @@ const addToCart = async (req, res, next) => {
   }
 }
 
+const updateCartQuantity = async (req, res, next) => {
+  try {
+    const { userId, name, email } = req.user
+    const { productId, quantity } = req.body
+    const newCart = await Cart.findByIdAndUpdate(userId, 
+      { $set: { 'items.$[elem].quantity': quantity}},
+      {
+        arrayFilters: [{ 'elem.productId': productId }],
+        new: true
+      }
+    )
+    return res.status(StatusCodes.OK).json(newCart)
+  } catch(err) {
+    next(err)
+  }
+}
+
 module.exports = {
   addToCart,
-  getCart
+  getCart,
+  updateCartQuantity
 }

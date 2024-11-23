@@ -14,7 +14,7 @@ const HomePage = (props) => {
   const [isArrowUp, setIsArrowUp] = useState(false)
   const [currentSortElement, setCurrentSortElement] = useState(<h3 className="text-gray-500">Newest</h3>)
   const isInitialMount = useRef(true)
-
+  console.log(cart)
   const [filterValues, setFilterValues] = useState({
     from: '',
     to: ''
