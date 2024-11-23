@@ -5,15 +5,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 
 const SingleProductPage = (props) => {
-  const { products, setProducts, user, setUser } = props
+  const { products, setProducts, user, setUser, cart, setCart } = props
   const [product, setProduct] = useState(null)
   const [ownerName, setOwnerName] = useState('')
 
   const location = useLocation()
   const navigate = useNavigate()
 
-  console.log(product)
-  console.log(user)
   const fetchProduct = async () => {
     try {
       const res = await axios.get(`http://localhost:5000/api/v1/protected${location.pathname}`, {
@@ -32,7 +30,7 @@ const SingleProductPage = (props) => {
       console.log(err)
     }
   }
-  console.log(ownerName)
+  
   const formatDate = (unFormattedDate) => {
     const date = new Date(unFormattedDate)
     return date.toLocaleString()
@@ -40,6 +38,20 @@ const SingleProductPage = (props) => {
 
   const handleClick = () => {
     navigate(`${location.pathname}/edit`)
+  }
+
+  const addToCart = async () => {
+    try {
+      const res = await axios.patch(`http://localhost:5000/api/v1/users/${user.userId}/cart`, { productId: product._id, quantity: 1},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      setCart(res.data)
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   useEffect(() => {
@@ -50,6 +62,7 @@ const SingleProductPage = (props) => {
     <div className="flex flex-col min-h-screen bg-slate-900">
       <Navbar
         user={user}
+        setUser={setUser}
       />
       <main className="flex justify-center mt-20 px-80">
         {product ? 
@@ -94,6 +107,9 @@ const SingleProductPage = (props) => {
                     {formatDate(product.updatedAt)}
                   </h1>
                 </div>
+                <button onClick={addToCart} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
+                  Add To Cart
+                </button>
               </div>
               {product.createdBy === user.userId && 
                 <div className="flex h-full mt-4">

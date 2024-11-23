@@ -45,7 +45,7 @@ const getUser = async (req, res, next) => {
     next(err)
   }
 }
-//i thinnk i output productid here but should be userid chagende in singleproductpage.jsx
+
 const getUserName = async (req, res, next) => {
   try {
     const user = await User.findById(req.headers.ownerid)

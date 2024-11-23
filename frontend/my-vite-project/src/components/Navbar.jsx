@@ -7,9 +7,9 @@ import LoginButton from './LoginButton';
 import MainLogo from './MainLogo'
 
 const Navbar = (props) => {
-  const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery } = props
+  const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery, filterValues } = props
   const [isOpen, setIsOpen] = useState(false)
-
+  
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -33,6 +33,7 @@ const Navbar = (props) => {
             setIsFilterOpen={setIsFilterOpen}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            filterValues={filterValues}
           />
         )}
 
@@ -52,7 +53,7 @@ const Navbar = (props) => {
 
           {/* Shopping cart */}
           <div className='min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
-            <Link to="/">
+            <Link to={user ? `/user/${user.userId}/cart` : '/login'}>
               <CiShoppingCart className='text-white w-7 h-7'/>
             </Link>
           </div>

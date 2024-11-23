@@ -14,6 +14,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = { userId: payload.userId, name: user.name, email: user.email }
     next()
   } catch(err) {
+    console.log(err)
     return next(new UnAuthenticatedError('Authentication invalid!'))
   }
 }

@@ -8,12 +8,14 @@ import ProfilePage from './pages/ProfilePage';
 import SingleProductPage from './pages/SingleProductPage';
 import EditPage from './pages/EditPage';
 import RegisterPage from './pages/RegisterPage';
+import CartPage from './pages/CartPage';
 
 function App() {
   const [products, setProducts] = useState([])
   const [user, setUser] = useState(null)
+  const [cart, setCart] = useState(null)
 
-  const fetchData = async () => {
+  const fetchProductsData = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/v1/products')
       setProducts(res.data.products)
@@ -22,7 +24,7 @@ function App() {
     }
   }
 
-  const fetchUser = async () => {
+  const fetchUserData = async () => {
     try {
       const token = localStorage.getItem('token')
       if (token) {
@@ -30,6 +32,11 @@ function App() {
           headers: { Authorization: `Bearer ${token}`}
         })
         setUser(res.data)
+
+        const resCart = await axios.get(`http://localhost:5000/api/v1/users/${res.data.userId}/cart`, {
+          headers: { Authorization: `Bearer ${token}`}
+        })
+        setCart(resCart.data)
       }
     } catch(err) {
       console.log(err)
@@ -37,8 +44,8 @@ function App() {
   }
 
   useEffect(() => {
-    fetchData()
-    fetchUser()
+    fetchProductsData()
+    fetchUserData()
   }, [])
 
   return (
@@ -51,6 +58,7 @@ function App() {
             setProducts={setProducts}
             user={user}
             setUser={setUser}
+            cart={cart}
           />}
       />
       <Route 
@@ -59,7 +67,7 @@ function App() {
           <CreatePage
             products={products}
             setProducts={setProducts}
-            fetchData={fetchData}
+            fetchProductsData={fetchProductsData}
             user={user}
             setUser={setUser}
           />} 
@@ -86,6 +94,19 @@ function App() {
             setProducts={setProducts}
             user={user}
             setUser={setUser}
+            cart={cart}
+            setCart={setCart}
+          />}
+      />
+      <Route 
+        path="/user/:userId/cart" 
+        element={
+          <CartPage
+            products={products}
+            user={user}
+            setUser={setUser}
+            cart={cart}
+            setCart={setCart}
           />}
       />
       <Route 
@@ -96,6 +117,8 @@ function App() {
             setProducts={setProducts}
             user={user}
             setUser={setUser}
+            cart={cart}
+            setCart={setCart}
           />}
       />
       <Route 
@@ -104,7 +127,7 @@ function App() {
           <EditPage
             products={products}
             setProducts={setProducts}
-            fetchData={fetchData}
+            fetchProductsData={fetchProductsData}
             user={user}
           />}
       />

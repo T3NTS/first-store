@@ -4,7 +4,7 @@ import { IoSearch } from "react-icons/io5";
 
 
 const SearchBar = (props) => {
-  const {setIsFilterOpen, setSearchQuery} = props
+  const { setIsFilterOpen, setSearchQuery, filterValues } = props
   const [inputValue, setInputValue] = useState("")
 
   const handleOnKeyDown = (e) => {
@@ -12,6 +12,7 @@ const SearchBar = (props) => {
       console.log('pressed enter')
       setSearchQuery(prev => ({
         ...prev,
+        ...filterValues,
         name: inputValue
       }));
     }
@@ -21,6 +22,7 @@ const SearchBar = (props) => {
       <button 
         onClick={() => setSearchQuery(prev => ({
           ...prev,
+          ...filterValues,
           name: inputValue
         }))} 
         onKeyDown={(e) => handleOnKeyDown(e)} 

@@ -1,11 +1,7 @@
 import { useState } from "react"
 
 const Filters = (props) => {
-  const { setSearchQuery } = props
-  const [inputValues, setInputValues] = useState({
-    from: '',
-    to: ''
-  })
+  const { setSearchQuery, filterValues, setFilterValues } = props
   return (
     <div className="flex flex-col bg-slate bg-gray-800 mt-2 p-4 rounded">
       <h3 className="text-gray-400 mb-2 text-xl font-semibold">Price</h3>
@@ -15,8 +11,8 @@ const Filters = (props) => {
           className="h-10 min-w-[33%] rounded p-4 text-gray-200 bg-slate-800 focus:bg-gray-800 focus:outline-cyan-400 
             outline outline-2 outline-gray-600"
           name="from"
-          onChange={(e) => setInputValues({
-            ...inputValues,
+          onChange={(e) => setFilterValues({
+            ...filterValues,
             from: e.target.value
           })}
         />
@@ -28,8 +24,8 @@ const Filters = (props) => {
             outline outline-2 outline-gray-600"
           placeholder="To"
           name="to"
-          onChange={(e) => setInputValues({
-            ...inputValues,
+          onChange={(e) => setFilterValues({
+            ...filterValues,
             to: e.target.value
           })}
         />
@@ -37,7 +33,7 @@ const Filters = (props) => {
       <div className="flex mt-4 justify-center">
         <button onClick={() => setSearchQuery(prev => ({
           ...prev,
-          ...inputValues
+          ...filterValues
         }))} className="w-1/2 text-xl semibold h-8 bg-cyan-400 mt-2 rounded hover:opacity-80 transition">
           Search
         </button>

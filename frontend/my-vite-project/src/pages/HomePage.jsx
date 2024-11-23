@@ -8,25 +8,29 @@ import SortingButtons from "../components/SortingButtons";
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
 
 const HomePage = (props) => {
-  const { products, user, setUser } = props
+  const { products, user, setUser, cart } = props
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filteredProducts, setFilteredProducts] = useState(null)
   const [isArrowUp, setIsArrowUp] = useState(false)
   const [currentSortElement, setCurrentSortElement] = useState(<h3 className="text-gray-500">Newest</h3>)
   const isInitialMount = useRef(true)
+
+  const [filterValues, setFilterValues] = useState({
+    from: '',
+    to: ''
+  })
+
   const [searchQuery, setSearchQuery] = useState({
     from: '',
     to: '',
     name: '',
-    sort: 'createdAt'
+    sort: '-createdAt'
   })
-  //change so that search button will chagne filters state
+
   const getFilteredElements = async () => {
-    console.log(searchQuery)
     const {from, to, name, sort} = searchQuery
     try {
       const res = await axios.get(`http://localhost:5000/api/v1/products?from=${from}&to=${to}&sort=${sort}&${name ? `name=${name}` : ''}`)
-      console.log(res)
       setFilteredProducts(res.data.products)
     } catch(err) {
       console.log(err)
@@ -61,8 +65,8 @@ const HomePage = (props) => {
   }
 
   const sortElements = {
-    'createdAt': <h3 className="text-gray-500">Newest</h3>,
-    '-createdAt': <h3 className="text-gray-500">Oldest</h3>,
+    '-createdAt': <h3 className="text-gray-500">Newest</h3>,
+    'createdAt': <h3 className="text-gray-500">Oldest</h3>,
     'price': 
       <div className="flex items-center">
         <h3>Price</h3><FaLongArrowAltUp className="text-gray-500"/>
@@ -81,12 +85,15 @@ const HomePage = (props) => {
         setUser={setUser}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        filterValues={filterValues}
       />
       <main className="flex flex-col mt-20 items-center px-8">
         {isFilterOpen && (
           <Filters 
             setSearchQuery={setSearchQuery}
             searchQuery={searchQuery}
+            filterValues={filterValues}
+            setFilterValues={setFilterValues}
           />
         )}
         <div className="flex relative w-full mt-4 ml-8">

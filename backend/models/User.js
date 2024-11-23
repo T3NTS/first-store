@@ -22,6 +22,12 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide password'],
     minLength: [6, 'Minimum password length is 6 characters']
   },
+  cart: {
+    items: [{
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true},
+        price: { type: Number, required: true}
+      }]
+  }
 })
 
 UserSchema.pre('save', async function(next) {
