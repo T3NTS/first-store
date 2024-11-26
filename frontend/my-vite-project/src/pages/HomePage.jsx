@@ -14,7 +14,6 @@ const HomePage = (props) => {
   const [isArrowUp, setIsArrowUp] = useState(false)
   const [currentSortElement, setCurrentSortElement] = useState(<h3 className="text-gray-500">Newest</h3>)
   const isInitialMount = useRef(true)
-  console.log(cart)
   const [filterValues, setFilterValues] = useState({
     from: '',
     to: ''
@@ -77,7 +76,7 @@ const HomePage = (props) => {
     </div>
   }
 
-  return (
+  return filteredProducts && (
     <div className="flex flex-col items-center min-h-screen h-cover bg-slate-900">
       <Navbar
         setIsFilterOpen={setIsFilterOpen}
@@ -86,6 +85,7 @@ const HomePage = (props) => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         filterValues={filterValues}
+        cart={cart}
       />
       <main className="flex flex-col mt-20 items-center px-8">
         {isFilterOpen && (
@@ -110,7 +110,7 @@ const HomePage = (props) => {
         <div className="flex flex-col space-y-4">
         <div className="flex mb-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 gap-4 p-4">
-            {filteredProducts ? 
+            {filteredProducts && 
               filteredProducts.map(item => {
                 return (
                   <ProductCard
@@ -119,8 +119,7 @@ const HomePage = (props) => {
                     user={user}
                   />
                 )
-              })
-            : productCards}
+              })}
           </div>
         </div>
         </div>

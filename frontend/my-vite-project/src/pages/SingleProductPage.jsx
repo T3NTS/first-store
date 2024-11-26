@@ -42,7 +42,7 @@ const SingleProductPage = (props) => {
 
   const addToCart = async () => {
     try {
-      const res = await axios.patch(`http://localhost:5000/api/v1/users/${user.userId}/cart`, { productId: product._id, quantity: 1},
+      const res = await axios.patch(`http://localhost:5000/api/v1/users/${user.userId}/cart`, { productId: product._id, quantity: 1, action: 'add'},
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -63,6 +63,7 @@ const SingleProductPage = (props) => {
       <Navbar
         user={user}
         setUser={setUser}
+        cart={cart}
       />
       <main className="flex justify-center mt-20 px-80">
         {product ? 

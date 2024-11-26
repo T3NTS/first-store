@@ -7,15 +7,40 @@ import LoginButton from './LoginButton';
 import MainLogo from './MainLogo'
 
 const Navbar = (props) => {
-  const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery, filterValues } = props
+  const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery, filterValues, cart } = props
   const [isOpen, setIsOpen] = useState(false)
-  
+  const [cartQuantity, setCartQuantity] = useState(() => {
+    if (cart) {
+      let quantity = 0
+      cart.items.map(item => {
+        quantity += item.quantity
+      })
+      return quantity
+    }
+  })
+
   const location = useLocation()
   const navigate = useNavigate()
 
   const hideSearchBar = ['/'].includes(location.pathname)
   const hideName = ['/login'].includes(location.pathname)
   const hideLogin = ['/login', '/create'].includes(location.pathname)
+
+  const getCartQuantity = () => {
+    if (cart) {
+      let quantity = 0
+      cart.items.map(item => {
+        quantity += item.quantity
+      })
+      setCartQuantity(quantity)
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      getCartQuantity()
+    }
+  }, [cart])
 
   const logout = () => {
     localStorage.removeItem('token')
@@ -52,9 +77,16 @@ const Navbar = (props) => {
           )}
 
           {/* Shopping cart */}
-          <div className='min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
+          <div className='relative min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
             <Link to={user ? `/user/${user.userId}/cart` : '/login'}>
               <CiShoppingCart className='text-white w-7 h-7'/>
+              {user && 
+                <div className='flex bg-cyan-500 rounded-full justify-center items-center absolute h-5 w-5 right-0.5 top-0.5'>
+                  <h5 className='text-gray-200 font-bold'>
+                    {cartQuantity}
+                  </h5>
+                </div>
+              }
             </Link>
           </div>
 

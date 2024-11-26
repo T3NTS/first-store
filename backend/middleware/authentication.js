@@ -5,7 +5,7 @@ const User = require('../models/User')
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return next(new UnAuthenticatedError('Authentication invalid!'))
+    return next(new UnAuthenticatedError('No bearer header!'))
   }
   try {
     const token = authHeader.split(" ")[1]

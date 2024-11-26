@@ -1,4 +1,5 @@
 const Cart = require('../models/Cart')
+const { NotFoundError } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
 
 const getCart = async (req, res, next) => {
@@ -19,17 +20,32 @@ const getCart = async (req, res, next) => {
   }
 }
 
-const addToCart = async (req, res, next) => {
+const updateCart = async (req, res, next) => {
   try {
     const { userId, name, email } = req.user
-    const { productId, quantity } = req.body
+    const { productId, quantity, action } = req.body
     const cart = await Cart.findOne({ userId: userId })
-
     const productIndex = cart.items.findIndex(item => item.productId.equals(productId))
-    if (productIndex === -1) {
-      cart.items.push(req.body)
-    } else {
-      cart.items[productIndex].quantity += 1
+    switch (action) {
+      case 'add':
+        if (productIndex === -1) {
+          cart.items.push(req.body)
+        } else {
+          cart.items[productIndex].quantity += quantity 
+        }
+        break
+      case 'update':
+        if (productIndex === -1) {
+          return next(new NotFoundError('Product not in cart!'))
+        }
+        cart.items[productIndex].quantity = quantity
+        break
+      case 'delete':
+        if (productIndex === -1) {
+          return next(new NotFoundError('Product not in cart!'))
+        }
+        cart.items.splice(productIndex, 1)
+        break
     }
     await cart.save()
     return res.status(StatusCodes.OK).json(cart)
@@ -37,7 +53,7 @@ const addToCart = async (req, res, next) => {
     next(err)
   }
 }
-
+/*
 const updateCartQuantity = async (req, res, next) => {
   try {
     const { userId, name, email } = req.user
@@ -53,10 +69,9 @@ const updateCartQuantity = async (req, res, next) => {
   } catch(err) {
     next(err)
   }
-}
+}*/
 
 module.exports = {
-  addToCart,
-  getCart,
-  updateCartQuantity
+  updateCart,
+  getCart
 }

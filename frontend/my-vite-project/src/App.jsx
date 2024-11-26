@@ -9,12 +9,16 @@ import SingleProductPage from './pages/SingleProductPage';
 import EditPage from './pages/EditPage';
 import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
-
+//LATER FIX FETCHING MULTIPLE TIMES 
 function App() {
   const [products, setProducts] = useState([])
   const [user, setUser] = useState(null)
-  const [cart, setCart] = useState(null)
-
+  const [isLoading, setIsLoading] = useState(true)
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('cart')
+    return savedCart ? JSON.parse(savedCart) : null
+  })
+/*
   const fetchProductsData = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/v1/products')
@@ -22,21 +26,26 @@ function App() {
     } catch(err) {
       throw err
     }
-  }
+  }*/
 
   const fetchUserData = async () => {
     try {
+      console.log('fetching data')
+      const res = await axios.get('http://localhost:5000/api/v1/products')
+      setProducts(res.data.products)
       const token = localStorage.getItem('token')
       if (token) {
         const res = await axios.get('http://localhost:5000/api/v1/users', {
           headers: { Authorization: `Bearer ${token}`}
         })
         setUser(res.data)
-
-        const resCart = await axios.get(`http://localhost:5000/api/v1/users/${res.data.userId}/cart`, {
-          headers: { Authorization: `Bearer ${token}`}
-        })
-        setCart(resCart.data)
+        if (!cart) {
+          const resCart = await axios.get(`http://localhost:5000/api/v1/users/${res.data.userId}/cart`, {
+            headers: { Authorization: `Bearer ${token}`}
+          })
+          localStorage.setItem('cart', JSON.stringify(resCart.data))
+          setCart(resCart.data)
+        }
       }
     } catch(err) {
       console.log(err)
@@ -44,11 +53,11 @@ function App() {
   }
 
   useEffect(() => {
-    fetchProductsData()
+    //fetchProductsData()
     fetchUserData()
+    setIsLoading(false)
   }, [])
-
-  return (
+  return !isLoading && ( 
     <Routes>
 			<Route 
         path="/" 
@@ -67,7 +76,6 @@ function App() {
           <CreatePage
             products={products}
             setProducts={setProducts}
-            fetchProductsData={fetchProductsData}
             user={user}
             setUser={setUser}
           />} 
@@ -127,7 +135,6 @@ function App() {
           <EditPage
             products={products}
             setProducts={setProducts}
-            fetchProductsData={fetchProductsData}
             user={user}
           />}
       />

@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 
 const EditPage = (props) => {
-  const { products, setProducts, fetchData, user } = props
+  const { products, setProducts, user } = props
   const [productError, setProductError] = useState(false)
   const [newProduct, setNewProduct] = useState({
     name: "",

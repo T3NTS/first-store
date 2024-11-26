@@ -1,3 +1,4 @@
+const { StatusCodes } = require('http-status-codes')
 const Product = require('../models/Product')
 
 const getAllProducts = async (req, res, next) => {
@@ -19,10 +20,8 @@ const getAllProducts = async (req, res, next) => {
       result = result.sort(sortList)
     } else {
       result = result.sort('createdAt')
-      console.log(result)
     }
     const products = await result
-    console.log(products)
     res.status(200).json({products})
   } catch(err) {
     return next(err)
@@ -41,9 +40,7 @@ const getProduct = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   try {
     req.body.createdBy = req.user.userId
-    //console.log({...req.body, createdBy: req.user.userId})
     const product = await Product.create(req.body)
-    console.log(product)
     res.status(200).json({product})
   } catch(err) {
     next(err)
@@ -72,10 +69,28 @@ const updateProduct = async (req, res, next) => {
   }
 }
 
+const getProductsBatch = async (req, res, next) => {
+  const { cartItems } = req.body
+  const productIds = cartItems.map(item => item.id)
+  if (productIds) {
+    const productsInfo = await Product.find({
+      _id: { $in: productIds }
+    })
+    const lookup = Object.fromEntries(cartItems.map(item => [item.id, item.quantity]))
+    const products = productsInfo.map(product => ({
+      ...product._doc,
+      quantity: lookup[product._id.toString()]
+    }))
+    res.status(StatusCodes.OK).json(products)
+  }
+
+}
+
 module.exports = {
   getAllProducts,
   getProduct,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  getProductsBatch
 }
