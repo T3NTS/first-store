@@ -29,7 +29,7 @@ const updateCart = async (req, res, next) => {
     switch (action) {
       case 'add':
         if (productIndex === -1) {
-          cart.items.push(req.body)
+          cart.items.push({ productId: productId, quantity: quantity })
         } else {
           cart.items[productIndex].quantity += quantity 
         }

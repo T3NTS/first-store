@@ -9,7 +9,6 @@ const SearchBar = (props) => {
 
   const handleOnKeyDown = (e) => {
     if (e.key === 'Enter') {
-      console.log('pressed enter')
       setSearchQuery(prev => ({
         ...prev,
         ...filterValues,
@@ -25,7 +24,6 @@ const SearchBar = (props) => {
           ...filterValues,
           name: inputValue
         }))} 
-        onKeyDown={(e) => handleOnKeyDown(e)} 
         className='flex justify-center items-center h-full aspect-[1] rounded-l-lg bg-cyan-500 hover:bg-cyan-400 transition'
       >
         <IoSearch  className=' text-gray-200 h-1/2 w-1/2'/>
@@ -34,6 +32,7 @@ const SearchBar = (props) => {
         className='z-1 w-full h-full p-4 text-gray-400 bg-slate-800 focus:bg-gray-800 outline-none'
         name="search"
         onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleOnKeyDown}
       />
       <button onClick={() => setIsFilterOpen(prev => !prev)} className='flex justify-center items-center h-full aspect-[1] rounded-r-lg bg-cyan-500 hover:bg-cyan-400 transition'>
         <IoIosOptions className='text-white h-1/2 w-1/2'/>

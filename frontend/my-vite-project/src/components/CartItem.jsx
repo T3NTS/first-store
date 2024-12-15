@@ -38,7 +38,7 @@ const CartItem = (props) => {
     try {
       await updateCart({ 
         productId: _id, 
-        quantity: 1,
+        quantity: newQuantity,
         action: 'update'
       })
       setInputValue(newQuantity)

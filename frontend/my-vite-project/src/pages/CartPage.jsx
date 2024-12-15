@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import CartItem from "../components/CartItem";
 
 
+//kui panen add to cart siis nullib teise itemi asjad ara
 const CartPage = (props) => {
   const { user, setUser, cart, setCart } = props
   const [isLoading, setIsLoading] = useState(true)
@@ -45,7 +46,6 @@ const CartPage = (props) => {
 
   const updateCart = async (cartProduct) => {
     const url = location.pathname.split('/').slice(-2).join('/')
-    console.log('updating cart')
     try {
       const res = await axios.patch(`http://localhost:5000/api/v1/users/${url}`, cartProduct, {
         headers: {
@@ -66,8 +66,8 @@ const CartPage = (props) => {
         setUser={setUser}
         cart={cart}
       />
-      <main className="flex flex-col mt-20 items-center p-8">
-        <div className="h-full w-full bg-slate-950">
+      <main className="flex flex-col mt-20 items-center p-8 w-full px-8">
+        <div className="bg-slate-950 w-full rounded-lg">
           <h1 className="text-gray-400 text-2xl p-4 font-bold text-center mb-8">{`Your Cart (${cart.items.length} items)`}</h1>
           <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_auto] pl-12">
             <div></div>

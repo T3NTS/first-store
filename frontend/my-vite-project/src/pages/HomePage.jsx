@@ -28,6 +28,7 @@ const HomePage = (props) => {
 
   const getFilteredElements = async () => {
     const {from, to, name, sort} = searchQuery
+    console.log('get filtered')
     try {
       const res = await axios.get(`http://localhost:5000/api/v1/products?from=${from}&to=${to}&sort=${sort}&${name ? `name=${name}` : ''}`)
       setFilteredProducts(res.data.products)
@@ -43,16 +44,6 @@ const HomePage = (props) => {
       getFilteredElements()
     }
   }, [searchQuery])
-
-  const productCards = products.map(item => {
-    return (
-      <ProductCard
-        product={item}
-        key={item._id}
-        user={user}
-      />
-    )
-  })
 
   const handleSortClick = (sort) => {
     setIsArrowUp(prev => !prev)
@@ -76,16 +67,18 @@ const HomePage = (props) => {
     </div>
   }
 
-  return filteredProducts && (
+  return (
     <div className="flex flex-col items-center min-h-screen h-cover bg-slate-900">
-      <Navbar
-        setIsFilterOpen={setIsFilterOpen}
-        user={user}
-        setUser={setUser}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        filterValues={filterValues}
-        cart={cart}
+      {filteredProducts &&
+        <>
+        <Navbar
+          setIsFilterOpen={setIsFilterOpen}
+          user={user}
+          setUser={setUser}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          filterValues={filterValues}
+          cart={cart}
       />
       <main className="flex flex-col mt-20 items-center px-8">
         {isFilterOpen && (
@@ -124,6 +117,9 @@ const HomePage = (props) => {
         </div>
         </div>
       </main>
+        </>
+      }
+    
     </div>
   )
 }
