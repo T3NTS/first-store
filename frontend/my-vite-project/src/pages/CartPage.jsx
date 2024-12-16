@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 import CartItem from "../components/CartItem";
 
 
-//kui panen add to cart siis nullib teise itemi asjad ara
 const CartPage = (props) => {
   const { user, setUser, cart, setCart } = props
   const [isLoading, setIsLoading] = useState(true)
@@ -58,7 +57,7 @@ const CartPage = (props) => {
       console.log(err)
     }
   }
-
+  
   return (
     <div className="flex flex-col items-center min-h-screen h-cover bg-slate-900">
       <Navbar

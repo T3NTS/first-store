@@ -13,7 +13,7 @@ const ProductCard = (props) => {
   }
 
   return (
-    <div onClick={handleClick} className="p-4 bg-gray-800 cursor-pointer rounded flex flex-col relative mb-8 w-108 h-96">
+    <div onClick={handleClick} className="p-4 hover:-translate-y-6 bg-gray-800 cursor-pointer rounded flex flex-col relative mb-8 w-108 h-96 transition">
       <img className='h-2/3 object-cover  mb-2' src={product.imageURL}/>
       <h3 className='text-2xl text-wrap text-white font-semibold mb-2'>
         {product.name}

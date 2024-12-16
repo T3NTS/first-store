@@ -53,7 +53,7 @@ const HomePage = (props) => {
       sort: sort
     }))
   }
-
+console.log(user)
   const sortElements = {
     '-createdAt': <h3 className="text-gray-500">Newest</h3>,
     'createdAt': <h3 className="text-gray-500">Oldest</h3>,

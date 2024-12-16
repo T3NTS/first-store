@@ -1,5 +1,5 @@
 import {React, useEffect, useState} from 'react';
-import { CiLogin, CiLogout, CiShoppingCart } from "react-icons/ci";
+import { CiLogin, CiLogout, CiShoppingCart, CiChat1 } from "react-icons/ci";
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { RxHamburgerMenu } from "react-icons/rx";
 import SearchBar from './SearchBar';
@@ -76,6 +76,7 @@ const Navbar = (props) => {
             />
           )}
 
+          
           {/* Shopping cart */}
           <div className='relative min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
             <Link to={user ? `/user/${user.userId}/cart` : '/login'}>
@@ -87,6 +88,12 @@ const Navbar = (props) => {
                   </h5>
                 </div>
               }
+            </Link>
+          </div>
+
+          <div className='relative min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
+            <Link to={user ? `/user/${user.userId}/cart` : '/login'}>
+              <CiChat1 className='text-white w-7 h-7'/>
             </Link>
           </div>
 

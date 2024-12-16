@@ -9,7 +9,8 @@ import SingleProductPage from './pages/SingleProductPage';
 import EditPage from './pages/EditPage';
 import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
-//LATER FIX FETCHING MULTIPLE TIMES 
+//LATER FIX FETCHING MULTIPLE TIMES'
+//MAYBE SETUP ADMIN/USER ROLES 
 function App() {
   const [products, setProducts] = useState([])
   const [user, setUser] = useState(null)
@@ -18,15 +19,6 @@ function App() {
     const savedCart = localStorage.getItem('cart')
     return savedCart ? JSON.parse(savedCart) : null
   })
-/*
-  const fetchProductsData = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/api/v1/products')
-      setProducts(res.data.products)
-    } catch(err) {
-      throw err
-    }
-  }*/
 
   const fetchUserData = async () => {
     try {
@@ -38,6 +30,7 @@ function App() {
         const res = await axios.get('http://localhost:5000/api/v1/users', {
           headers: { Authorization: `Bearer ${token}`}
         })
+        console.log(res.data)
         setUser(res.data)
         if (!cart) {
           const resCart = await axios.get(`http://localhost:5000/api/v1/users/${res.data.userId}/cart`, {
@@ -53,7 +46,6 @@ function App() {
   }
 
   useEffect(() => {
-    //fetchProductsData()
     fetchUserData()
     setIsLoading(false)
   }, [])

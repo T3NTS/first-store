@@ -17,11 +17,12 @@ const LoginPage = (props) => {
   const login = async () => {
     try {
       const res = await axios.post('http://localhost:5000/api/v1/auth/login', loginInfo)
-      const { token, user: { email, name } } = res.data
-      console.log(token, name, email)
+      const { token, user: { email, name, role } } = res.data
+      console.log(token, name, email, role)
       setUser({
         name: name,
-        email: email
+        email: email,
+        role: role
       })
       navigate('/')
       localStorage.setItem('token', token)
