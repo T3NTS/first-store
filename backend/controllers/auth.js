@@ -15,10 +15,18 @@ const login = async (req, res, next) => {
   if (!isPasswordCorrect) {
     return next(new UnAuthenticatedError('Wrong password!'))
   }
+  if (!user.role) {
+    if (email === 'rasmus.tents@gmail.com') {
+      user.role = 'admin'
+    }
+    await User.findByIdAndUpdate(user._id, user, {new: true, runValidators: true})
+  }
+  console.log(user)
   const token = user.createJWT()
   res.status(StatusCodes.OK).send({ user: {
     name: user.name,
-    email: email
+    email: email,
+    role: user.role
   }, token })
 }
 
