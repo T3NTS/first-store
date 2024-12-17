@@ -9,8 +9,9 @@ import SingleProductPage from './pages/SingleProductPage';
 import EditPage from './pages/EditPage';
 import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
+import ChatPage from './pages/ChatPage';
 //LATER FIX FETCHING MULTIPLE TIMES'
-//MAYBE SETUP ADMIN/USER ROLES 
+
 function App() {
   const [products, setProducts] = useState([])
   const [user, setUser] = useState(null)
@@ -128,6 +129,16 @@ function App() {
             products={products}
             setProducts={setProducts}
             user={user}
+          />}
+      />
+      <Route 
+        path="/user/:userId/chat" 
+        element={
+          <ChatPage
+            user={user}
+            setUser={setUser}
+            cart={cart}
+            setCart={setCart}
           />}
       />
 		</Routes>

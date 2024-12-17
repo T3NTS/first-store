@@ -92,7 +92,7 @@ const Navbar = (props) => {
           </div>
 
           <div className='relative min-h-12 min-w-12 flex items-center justify-center rounded hover:bg-gray-600 transition'>
-            <Link to={user ? `/user/${user.userId}/cart` : '/login'}>
+            <Link to={user ? `/user/${user.userId}/chat` : '/login'}>
               <CiChat1 className='text-white w-7 h-7'/>
             </Link>
           </div>
