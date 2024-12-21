@@ -26,7 +26,8 @@ const login = async (req, res, next) => {
   res.status(StatusCodes.OK).send({ user: {
     name: user.name,
     email: email,
-    role: user.role
+    role: user.role,
+    userId: user._id
   }, token })
 }
 
