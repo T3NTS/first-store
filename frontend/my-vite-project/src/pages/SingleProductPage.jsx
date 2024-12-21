@@ -3,12 +3,14 @@ import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
+import { useWebSocketContext } from "../context/WebSocketContext";
 
 const SingleProductPage = (props) => {
   const { products, setProducts, user, setUser, cart, setCart } = props
   const [product, setProduct] = useState(null)
   const [ownerName, setOwnerName] = useState('')
-
+  const socket = useWebSocketContext()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -52,6 +54,10 @@ const SingleProductPage = (props) => {
     } catch(err) {
       console.log(err)
     }
+  }
+
+  const joinRoom = () => {
+    navigate(`/user/${user.userId}/chat/${product.createdBy}`)
   }
 
   useEffect(() => {
@@ -108,9 +114,16 @@ const SingleProductPage = (props) => {
                     {formatDate(product.updatedAt)}
                   </h1>
                 </div>
-                <button onClick={addToCart} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
-                  Add To Cart
-                </button>
+                {product.createdBy !== user.userId && 
+                <div>
+                  <button onClick={addToCart} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
+                    Add To Cart
+                  </button>
+                  <button onClick={joinRoom} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
+                    Message
+                  </button>
+                </div>
+                }
               </div>
               {product.createdBy === user.userId && 
                 <div className="flex h-full mt-4">

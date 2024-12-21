@@ -5,6 +5,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import MainLogo from './MainLogo'
+import { useWebSocketContext } from '../context/WebSocketContext';
 
 const Navbar = (props) => {
   const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery, filterValues, cart } = props
@@ -18,7 +19,7 @@ const Navbar = (props) => {
       return quantity
     }
   })
-
+  const socket = useWebSocketContext()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -44,6 +45,9 @@ const Navbar = (props) => {
 
   const logout = () => {
     localStorage.removeItem('token')
+    if (socket) {
+      socket.disconnect()
+    }
     setUser(null)
     navigate('/')
   }

@@ -1,10 +1,15 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Navbar from "../components/Navbar"
+import { IoMdSend } from "react-icons/io";
+import { CiCircleCheck } from "react-icons/ci";
+import { useWebSocketContext } from "../context/WebSocketContext";
 
 const ChatPage = (props) => {
   const { user, setUser, cart } = props
   const [buying, setBuying] = useState(true)
   const [selling, setSelling] = useState(false)
+  
+  const socket = useWebSocketContext()
   const changeButton = (button) => {
     if (button === 'buy' && !buying) {
       setBuying(true)
@@ -52,21 +57,10 @@ const ChatPage = (props) => {
               </div>
             </div>
           </div>
-          <div className="bg-slate-950 w-full h-full rounded-lg">
-            <div className="flex items-center w-full h-16 border-b border-gray-500 p-4">
-              <img className="rounded-full w-8 h-8 mr-4" src='https://icon2.cleanpng.com/20180516/vgq/avrk6f9b5.webp'/>
-              <h3 className="font-bold text-gray-400 text-lg">Michael</h3>
-            </div>
-            <div className="flex items-center w-full h-16 p-4">
-              <img className="h-11 w-11 rounded mr-4 object-cover" src='https://www.stratstone.com/-/media/stratstone/blog/2024/top-10-best-supercars-of-2024/mclaren-750s-driving-dynamic-hero-1920x774px.ashx'/>
-              <div className="flex flex-col">
-                <h4 className="text-gray-400 m-0">Item name</h4>
-                <h5 className="text-gray-400 font-bold m-0 text-sm">650 000</h5>
-              </div>
-            </div>
+          <div className="flex flex-col bg-slate-950 w-full h-full rounded-lg">
+            Click on a person to start chatting
           </div>
         </div>
-        
       </main>
     </div>
   )
