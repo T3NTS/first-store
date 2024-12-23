@@ -1,10 +1,13 @@
-import {React, useEffect, useState} from "react";
+import {React, useContext, useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { ProductsContext } from "../context/ProductsContext";
 
-const EditPage = (props) => {
-  const { products, setProducts, user } = props
+const EditPage = () => {
+  const { user } = useContext(UserContext)
+  const { setProducts } = useContext(ProductsContext)
   const [productError, setProductError] = useState(false)
   const [newProduct, setNewProduct] = useState({
     name: "",

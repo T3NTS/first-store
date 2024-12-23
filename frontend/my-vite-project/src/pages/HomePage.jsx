@@ -1,4 +1,4 @@
-import {React, useEffect, useRef, useState} from "react";
+import {React, useContext, useEffect, useRef, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import ProductCard from "../components/ProductCard";
@@ -6,9 +6,12 @@ import Filters from "../components/Filters";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import SortingButtons from "../components/SortingButtons";
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
+import { UserContext } from "../context/UserContext";
+import { ProductsContext } from "../context/ProductsContext";
+import { CartContext } from "../context/CartContext";
 
-const HomePage = (props) => {
-  const { products, user, setUser, cart } = props
+const HomePage = () => {
+  //const { products, user, setUser, cart } = props
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filteredProducts, setFilteredProducts] = useState(null)
   const [isArrowUp, setIsArrowUp] = useState(false)
@@ -18,6 +21,8 @@ const HomePage = (props) => {
     from: '',
     to: ''
   })
+  const { user, setUser } = useContext(UserContext)
+  const { cart } = useContext(CartContext)
 
   const [searchQuery, setSearchQuery] = useState({
     from: '',
@@ -73,13 +78,10 @@ const HomePage = (props) => {
         <>
         <Navbar
           setIsFilterOpen={setIsFilterOpen}
-          user={user}
-          setUser={setUser}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           filterValues={filterValues}
-          cart={cart}
-      />
+        />
       <main className="flex flex-col mt-20 items-center px-8">
         {isFilterOpen && (
           <Filters 
@@ -109,7 +111,6 @@ const HomePage = (props) => {
                   <ProductCard
                     product={item}
                     key={item._id}
-                    user={user}
                   />
                 )
               })}

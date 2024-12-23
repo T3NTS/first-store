@@ -1,18 +1,21 @@
-import {React, useEffect, useState} from "react";
+import {React, useContext, useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useWebSocketContext } from "../context/WebSocketContext";
+import { UserContext } from "../context/UserContext";
+import { CartContext } from "../context/CartContext";
 
 const SingleProductPage = (props) => {
-  const { products, setProducts, user, setUser, cart, setCart } = props
   const [product, setProduct] = useState(null)
   const [ownerName, setOwnerName] = useState('')
   const socket = useWebSocketContext()
   const location = useLocation()
   const navigate = useNavigate()
+  const { user } = useContext(UserContext)
+  const { cart, setCart } = useContext(CartContext)
 
   const fetchProduct = async () => {
     try {
@@ -57,7 +60,14 @@ const SingleProductPage = (props) => {
   }
 
   const joinRoom = () => {
-    navigate(`/user/${user.userId}/chat/${product.createdBy}`)
+    if (socket) {
+      const { userId } = user
+      const { _id, createdBy } = product
+      console.log({ buyerId: userId, productId: _id, sellerId: createdBy })
+      socket.emit('fetch_roomid', { buyerId: userId, productId: _id, sellerId: createdBy }, (roomId) => {
+        navigate(`/user/${userId}/chat/${roomId}`)
+      })
+    }
   }
 
   useEffect(() => {
@@ -66,11 +76,7 @@ const SingleProductPage = (props) => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-900">
-      <Navbar
-        user={user}
-        setUser={setUser}
-        cart={cart}
-      />
+      <Navbar/>
       <main className="flex justify-center mt-20 px-80">
         {product ? 
           <div className="flex flex-col bg-gray-800 mt-4 mb-4 p-4 rounded-xl w-full">
@@ -115,7 +121,7 @@ const SingleProductPage = (props) => {
                   </h1>
                 </div>
                 {product.createdBy !== user.userId && 
-                <div>
+                <div className="flex gap-4 mt-4">
                   <button onClick={addToCart} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
                     Add To Cart
                   </button>

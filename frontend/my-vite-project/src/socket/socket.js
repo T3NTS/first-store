@@ -7,7 +7,6 @@ const useWebSocket = (user) => {
   useEffect(() => {
     console.log(user, socketRef.current)
     if (user && !socketRef.current) {
-      // Initialize WebSocket connection
       socketRef.current = io('http://localhost:5000', {
         transports: ['websocket']
       });
@@ -22,7 +21,6 @@ const useWebSocket = (user) => {
     }
 
     return () => {
-      // Cleanup WebSocket connection on unmount
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;

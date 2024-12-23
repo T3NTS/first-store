@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 const Filters = (props) => {
   const { setSearchQuery, filterValues, setFilterValues } = props
   return (

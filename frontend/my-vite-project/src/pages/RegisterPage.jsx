@@ -1,14 +1,14 @@
-import {React, useEffect, useState} from "react";
+import {React, useContext, useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { IoEyeOutline } from "react-icons/io5";
+import { UserContext } from "../context/UserContext";
 
 const RegisterPage = (props) => {
-  const {setUser} = props
-
+  const { setUser } = useContext(UserContext)
   const navigate = useNavigate()
   const [productError, setProductError] = useState(false)
   const [loginInfo, setLoginInfo] = useState({

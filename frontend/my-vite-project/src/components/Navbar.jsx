@@ -1,15 +1,19 @@
-import {React, useEffect, useState} from 'react';
-import { CiLogin, CiLogout, CiShoppingCart, CiChat1 } from "react-icons/ci";
+import {React, useContext, useEffect, useState} from 'react';
+import { CiShoppingCart, CiChat1 } from "react-icons/ci";
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { RxHamburgerMenu } from "react-icons/rx";
 import SearchBar from './SearchBar';
 import LoginButton from './LoginButton';
 import MainLogo from './MainLogo'
 import { useWebSocketContext } from '../context/WebSocketContext';
+import { UserContext } from '../context/UserContext';
+import { CartContext } from '../context/CartContext';
 
 const Navbar = (props) => {
-  const { user, setUser, setIsFilterOpen, searchQuery, setSearchQuery, filterValues, cart } = props
+  const { setIsFilterOpen, searchQuery, setSearchQuery, filterValues } = props
   const [isOpen, setIsOpen] = useState(false)
+  const { user, setUser } = useContext(UserContext)
+  const { cart } = useContext(CartContext)
   const [cartQuantity, setCartQuantity] = useState(() => {
     if (cart) {
       let quantity = 0
@@ -74,8 +78,7 @@ const Navbar = (props) => {
           )}
 
           {!hideLogin && (
-            <LoginButton 
-              user={user}
+            <LoginButton
               logout={logout}
             />
           )}
@@ -88,7 +91,7 @@ const Navbar = (props) => {
               {user && 
                 <div className='flex bg-cyan-500 rounded-full justify-center items-center absolute h-5 w-5 right-0.5 top-0.5'>
                   <h5 className='text-gray-200 font-bold'>
-                    {cartQuantity}
+                    {cartQuantity || 0}
                   </h5>
                 </div>
               }

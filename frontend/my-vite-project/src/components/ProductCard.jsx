@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
 
 const ProductCard = (props) => {
-  const { product, user } = props
+  const { product } = props
+  const { user } = useContext(UserContext)
   const navigate = useNavigate()
   const handleClick = () => {
     {user ? navigate(`/products/${product._id}`) : navigate('/login')}

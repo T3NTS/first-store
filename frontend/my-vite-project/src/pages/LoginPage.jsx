@@ -1,12 +1,12 @@
-import {React, useEffect, useState} from "react";
+import {React, useContext, useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
-const LoginPage = (props) => {
-  const {setUser} = props
-
+const LoginPage = () => {
+  const { setUser } = useContext(UserContext)
   const navigate = useNavigate()
   const [productError, setProductError] = useState(false)
   const [loginInfo, setLoginInfo] = useState({

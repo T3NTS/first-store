@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import { CiLogin, CiLogout } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const LoginButton = (props) => {
-  const {user, logout} = props
+  const { logout } = props
+  const { user } = useContext(UserContext)
   return (
     <div className='min-h-12 min-w-12 flex items-center rounded justify-center hover:bg-gray-600 transition'>
       {user ? 

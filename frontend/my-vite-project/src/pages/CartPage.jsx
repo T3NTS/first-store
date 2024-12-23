@@ -1,16 +1,19 @@
-import {React, useEffect, useState, useRef} from "react";
+import {React, useEffect, useState, useRef, useContext} from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import CartItem from "../components/CartItem";
+import { CartContext } from "../context/CartContext";
 
 
 const CartPage = (props) => {
-  const { user, setUser, cart, setCart } = props
+  //const { user, setUser, cart, setCart } = props
   const [isLoading, setIsLoading] = useState(true)
   const isInitialMount = useRef(true)
   const location = useLocation()
   const [cartInfo, setCartInfo] = useState(null)
+
+  const { cart, setCart } = useContext(CartContext)
 
   const fetchProducts = async () => {
     const cartItems = cart.items.map(item => ({
@@ -60,11 +63,7 @@ const CartPage = (props) => {
   
   return (
     <div className="flex flex-col items-center min-h-screen h-cover bg-slate-900">
-      <Navbar
-        user={user}
-        setUser={setUser}
-        cart={cart}
-      />
+      <Navbar/>
       <main className="flex flex-col mt-20 items-center p-8 w-full px-8">
         <div className="bg-slate-950 w-full rounded-lg">
           <h1 className="text-gray-400 text-2xl p-4 font-bold text-center mb-8">{`Your Cart (${cart.items.length} items)`}</h1>

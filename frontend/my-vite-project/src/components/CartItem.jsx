@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from "react"
-import axios from "axios"
+import { useState, useContext } from "react"
 import { FaPlus, FaMinus  } from "react-icons/fa";
 import { HiOutlineXMark } from "react-icons/hi2";
+import { CartContext } from "../context/CartContext";
 
 
 const CartItem = (props) => {
-  const { product: { imageURL, name, price, quantity, _id }, setCartInfo, updateCart, cartInfo, setCart, cart } = props
+  const { product: { imageURL, name, price, quantity, _id }, setCartInfo, updateCart, cartInfo } = props
+  const { setCart } = useContext(CartContext)
   const [inputValue, setInputValue] = useState(quantity)
   const [totalPrice, setTotalPrice] = useState(inputValue * price)
 

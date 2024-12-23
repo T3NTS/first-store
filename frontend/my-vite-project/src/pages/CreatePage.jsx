@@ -1,10 +1,13 @@
-import {React, useEffect, useState} from "react";
+import {React, useContext, useEffect, useState} from "react";
 import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import { ProductsContext } from "../context/ProductsContext";
+import { UserContext } from "../context/UserContext";
 
-const CreatePage = (props) => {
-  const { products, setProducts, user } = props
+const CreatePage = () => {
+  const { setProducts } = useContext(ProductsContext)
+  const { user } = useContext(UserContext)
   const [productError, setProductError] = useState(false)
   const [newProduct, setNewProduct] = useState({
     name: '',
@@ -33,9 +36,7 @@ const CreatePage = (props) => {
 
   return (
     <div onClick={() => setProductError(false)} className="flex flex-col min-h-screen bg-slate-900">
-    <Navbar
-      user={user}
-    />
+    <Navbar/>
     <main className="flex flex-col flex-1 items-center justify-center">
       <div className="flex flex-col items-center p-4 bg-slate-950 w-2/5 rounded-lg">
         <h1 className="text-gray-200 text-3xl mb-8 font-semibold">
