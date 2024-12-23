@@ -32,7 +32,7 @@ app.use('/api/v1/products', productsRouter)
 app.use('/api/v1/protected/products', authMiddleware, protectedRouter)
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', authMiddleware, usersRouter)
-app.use('/api/v1/user', authMiddleware, messagesRouter)
+app.use('/api/v1/chat', authMiddleware, messagesRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)

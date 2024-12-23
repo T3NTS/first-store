@@ -1,5 +1,7 @@
 const { saveMessage, getRoom } = require('./controllers/messages')
+const Room = require('./models/Room')
 const socketio = require('socket.io')
+const crypto = require('crypto')
 
 let io
 
@@ -20,16 +22,32 @@ const initializeSocket = (server) => {
         console.log(`User disconnected: ${socket.id}`);
         console.log(`Total connected clients: ${io.sockets.sockets.size}`);
       });
-      socket.on('join_room', async ({ user1, user2 }) => {
+
+      socket.on('fetch_roomid', async ({ buyerId, productId, sellerId }, callback) => {
         try {
-          const room = await getRoom(user1, user2)
+          const unhashed = `${buyerId}_${sellerId}_${productId}`
+          const roomId = crypto.createHash('sha256').update(unhashed).digest('hex')
+          const room = await Room.findOne({ roomId })
+            if (!room) {
+              await Room.create({ buyerId, productId, sellerId, roomId })
+            }
+          callback(roomId)
+        } catch(err) {
+          console.log(err)
+        }
+      })
+
+      socket.on('join_room', async ({ roomId }) => {
+        try {
+          const room = await Room.findOne({ roomId })
           socket.join(room.roomId)
           console.log(`${socket.id} joined room: ${room.roomId}`);
           socket.emit('joined_room', { roomId: room.roomId });
         } catch (error) {
-          console.error('Error in join_chat:', error);
+          console.error('Error in join_room:', error);
         }
       })
+
       socket.on('send_message', async (data) => {
         try {
           await saveMessage(data)

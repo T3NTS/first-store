@@ -1,9 +1,17 @@
 const mongoose = require('mongoose')
 
 const roomSchema = new mongoose.Schema({
-  participants: {
-    type: [String],
-    required: true
+  buyerId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  },
+  sellerId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  },
+  productId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Product' 
   },
   roomId: {
     type: String,
@@ -16,6 +24,10 @@ const roomSchema = new mongoose.Schema({
   },
   lastMessageAt: {
     type: Date,
+    default: null
+  },
+  lastMessage: {
+    type: String,
     default: null
   }
 })
