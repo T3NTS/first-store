@@ -7,11 +7,9 @@ import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import SortingButtons from "../components/SortingButtons";
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
-import { ProductsContext } from "../context/ProductsContext";
 import { CartContext } from "../context/CartContext";
 
 const HomePage = () => {
-  //const { products, user, setUser, cart } = props
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [filteredProducts, setFilteredProducts] = useState(null)
   const [isArrowUp, setIsArrowUp] = useState(false)
@@ -43,11 +41,8 @@ const HomePage = () => {
   }
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-    } else {
-      getFilteredElements()
-    }
+    console.log('getting filtered')
+    getFilteredElements()
   }, [searchQuery])
 
   const handleSortClick = (sort) => {

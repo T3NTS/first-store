@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import Navbar from "../components/Navbar"
 import axios from "axios";
-import { useWebSocketContext } from "../context/WebSocketContext";
 import ChatSidebar from "../components/ChatSidebar";
 import { UserContext } from "../context/UserContext";
 
@@ -52,6 +51,7 @@ const ChatPage = () => {
             buying={buying} 
             selling={selling}
             chats={chats}
+            pageLocation='ChatPage'
           />
           <div className="flex justify-center items-center font-bold text-3xl flex-col bg-slate-950 w-full h-full rounded-lg text-gray-400">
             Click on a person to start chatting

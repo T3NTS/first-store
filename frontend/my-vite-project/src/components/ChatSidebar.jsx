@@ -5,7 +5,7 @@ import { useContext } from "react"
 import { UserContext } from "../context/UserContext"
 
 const ChatSidebar = (props) => {
-  const { changeButton, buying, selling, chats } = props
+  const { changeButton, buying, selling, chats, pageLocation } = props
   const { user } = useContext(UserContext)
   const location = useLocation()
 
@@ -30,14 +30,14 @@ const ChatSidebar = (props) => {
         {buying ? chats.map((item) => {
           if (item.buyerId._id === user.userId) {
             return (
-              <Link to={`${location.pathname}/${item.roomId}`}>
+              <Link to={pageLocation === 'ChatPage' ? `${location.pathname}/${item.roomId}` : `/user/${user.userId}/chat/${item.roomId}`}>
                 <ChatRoomCard key={item.roomId} item={item}/>
               </Link>
             )}
           }) : chats.map((item) => {
           if (item.sellerId._id === user.userId) {
             return (
-              <Link to={`${location.pathname}/${item.roomId}`}>
+              <Link to={pageLocation === 'ChatPage' ? `${location.pathname}/${item.roomId}` : `/user/${user.userId}/chat/${item.roomId}`}>
                 <ChatRoomCard key={item.roomId} item={item}/>
               </Link>
             )}

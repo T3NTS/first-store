@@ -9,6 +9,7 @@ import ChatHeader from "../components/ChatHeader";
 import MessageBox from "../components/MessageBox";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import ChatSidebar from "../components/ChatSidebar";
 
 const SingleChatPage = (props) => {
   const { user } = useContext(UserContext)
@@ -23,6 +24,7 @@ const SingleChatPage = (props) => {
 
   useEffect(() => {
     const fetchMessages = async () => {
+      console.log('fetching messages')
       try {
         const res = await axios.get(`http://localhost:5000/api/v1/chat/${user.userId}/${roomId}`, {
           headers: {
@@ -36,6 +38,7 @@ const SingleChatPage = (props) => {
       }
     }
     const fetchChats = async () => {
+      console.log('fetching chats')
       try {
         const res = await axios.get(`http://localhost:5000/api/v1/chat/${user.userId}`, {
           headers: {
@@ -99,43 +102,15 @@ const SingleChatPage = (props) => {
       <Navbar/>
       <main className="flex flex-col mt-20 items-center p-8 h-full w-full px-48">
         <div className="flex h-full w-full gap-4">
-          <div className="bg-slate-950 w-2/5 h-full rounded-lg ">
-            <div className="flex flex-col">
-              <h1 className="text-gray-400 font-bold text-4xl p-4">Chat</h1>
-              <hr className="border-gray-500"/>
-            </div>
-            <div className="flex gap-2 p-4 mt-2">
-            <button onClick={() => changeButton('buy')} className={`rounded p-2 py-1 font-semibold transition ${buying ? 'bg-cyan-500 text-gray-200' : 'bg-slate-800 text-gray-400 hover:bg-cyan-500 hover:text-gray-200'}`}>
-              I'm buying
-            </button>
-            <button onClick={() => changeButton('sell')} className={`rounded p-2 py-1 font-semibold transition ${selling ? 'bg-cyan-500 text-gray-200' : 'bg-slate-800 text-gray-400 hover:bg-cyan-500 hover:text-gray-200'}`}>
-              I'm selling
-            </button>
-            </div>
-            {chats &&
-              <div className="flex w-full flex-col">
-                <div className="border-gray-500 border-b w-full p-2 pl-4">
-                  <h3 className="font-bold text-gray-400">READ</h3>
-                </div>
-                {buying ? chats.map((item) => {
-                  if (item.buyerId._id === user.userId) {
-                    return (
-                      <Link to={`/user/${user.userId}/chat/${item.roomId}`}>
-                        <ChatRoomCard key={item.roomId} item={item}/>
-                      </Link>
-                    )}
-                  }) : chats.map((item) => {
-                  if (item.sellerId._id === user.userId) {
-                    return (
-                      <Link to={`/user/${user.userId}/chat/${item.roomId}`}>
-                        <ChatRoomCard key={item.roomId} item={item}/>
-                      </Link>
-                    )}
-                  }
-                )}
-              </div>
-            }
-          </div>
+          {chats &&
+            <ChatSidebar
+              changeButton={changeButton}
+              buying={buying}
+              selling={selling}
+              chats={chats}
+              pageLocation='SingleChatPage'
+            />
+          }
           <div className="flex flex-col bg-slate-950 w-full h-full rounded-lg">
             {chats &&
               <>
@@ -161,7 +136,9 @@ const SingleChatPage = (props) => {
                 <input
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Write a message..." 
-                  className="w-full h-14 bg-slate-800 rounded-bl-lg p-4 outline-none text-gray-400"/>
+                  className="w-full h-14 bg-slate-800 rounded-bl-lg p-4 outline-none text-gray-400"
+                  value={inputValue}  
+                />
                 <div className="flex items-center h-14 w-14 bg-slate-800 rounded-br-lg">
                 {inputValue &&
                   <IoMdSend 

@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import useWebSocket from "../socket/socket";
 import { io } from 'socket.io-client';
+import { UserContext } from "./UserContext";
 
 const WebSocketContext = createContext(null)
-const WebSocketProvider = ({ children, user }) => {
+const WebSocketProvider = ({ children }) => {
+  const { user } = useContext(UserContext)
   const socketRef = useRef(null);
   const [socketReady, setSocketReady] = useState(false);
   useEffect(() => {

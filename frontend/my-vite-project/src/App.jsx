@@ -19,8 +19,11 @@ import { ProductsProvider } from './context/ProductsContext';
 //Double chat still aint solved
 function App() {
 //YOU NEED TO USE .POPULATE IN CART !!!!
-
- // return !isLoading && ( 
+//USE lazy fetching when scrolling up in chat
+//Maybe make chats property more global as it always fetches all chats when moving to new chat
+//Also chats aint changin when a new message is sent!
+//Havent done shit with seen + 
+//change sort by updated not created
  return (
     <UserProvider>
       <ProductsProvider>
