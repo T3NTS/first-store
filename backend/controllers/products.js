@@ -30,8 +30,8 @@ const getAllProducts = async (req, res, next) => {
 
 const getProduct = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id)
-    res.status(200).json({ product })
+    const product = await Product.findById(req.params.id).populate('createdBy')
+    res.status(200).json(product)
   } catch(err) {
     return next(err)
   }

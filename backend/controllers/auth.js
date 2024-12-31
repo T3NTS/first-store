@@ -21,7 +21,6 @@ const login = async (req, res, next) => {
     }
     await User.findByIdAndUpdate(user._id, user, {new: true, runValidators: true})
   }
-  console.log(user)
   const token = user.createJWT()
   res.status(StatusCodes.OK).send({ user: {
     name: user.name,
@@ -38,7 +37,6 @@ const register = async (req, res, next) => {
     throw new BadRequstError('Please provide all credentials!')
   }*/
  try {
-  console.log(req.body)
   const user = await User.create({...req.body})
   const token = user.createJWT()
   res.status(StatusCodes.CREATED).json({ user: {name: user.name}, token })
@@ -58,7 +56,6 @@ const getUser = async (req, res, next) => {
 const getUserName = async (req, res, next) => {
   try {
     const user = await User.findById(req.headers.ownerid)
-    console.log(user)
     res.status(StatusCodes.OK).json({name: user.name})
   } catch(err) {
     next(err)

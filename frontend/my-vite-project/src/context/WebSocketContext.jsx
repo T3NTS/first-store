@@ -44,4 +44,4 @@ const useWebSocketContext = () => {
   return useContext(WebSocketContext)
 }
 
-export { WebSocketProvider, useWebSocketContext }
+export { WebSocketProvider, WebSocketContext, useWebSocketContext }

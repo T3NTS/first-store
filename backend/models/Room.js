@@ -22,12 +22,9 @@ const roomSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  lastMessageAt: {
-    type: Date,
-    default: null
-  },
-  lastMessage: {
-    type: String,
+  lastMessageId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Message',
     default: null
   }
 })

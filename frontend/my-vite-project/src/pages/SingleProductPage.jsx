@@ -3,19 +3,17 @@ import Navbar from "../components/Navbar";
 import axios from 'axios'
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoSettingsOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { useWebSocketContext } from "../context/WebSocketContext";
 import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 
 const SingleProductPage = (props) => {
   const [product, setProduct] = useState(null)
-  const [ownerName, setOwnerName] = useState('')
   const socket = useWebSocketContext()
   const location = useLocation()
   const navigate = useNavigate()
   const { user } = useContext(UserContext)
-  const { cart, setCart } = useContext(CartContext)
+  const { setCart } = useContext(CartContext)
 
   const fetchProduct = async () => {
     try {
@@ -25,12 +23,8 @@ const SingleProductPage = (props) => {
         }
       })
       setProduct({
-        ...res.data.product
+        ...res.data
       })
-      const res2 = await axios.get('http://localhost:5000/api/v1/auth/getname', {
-        headers: { OwnerId: res.data.product.createdBy}
-      })
-      setOwnerName(res2.data.name)
     } catch(err) {
       console.log(err)
     }
@@ -58,7 +52,7 @@ const SingleProductPage = (props) => {
       console.log(err)
     }
   }
-
+//you can make that better by removing fetch_roomid and change roomid to userid+sellerid
   const joinRoom = () => {
     if (socket) {
       const { userId } = user
@@ -94,13 +88,13 @@ const SingleProductPage = (props) => {
                 </h1>
                 </div>
 
-                {product.createdBy !== user.userId && 
+                {product.createdBy._id !== user.userId && 
                 <div className="flex flex-row items-center font-semibold mt-4">
                   <h4 className="text-gray-200 text-2xl mr-4">
                     Owner:
                   </h4>
                   <h1 className="text-cyan-500 text-2xl">
-                  {ownerName}
+                  {product.createdBy.name}
                 </h1>
                 </div>}
 
@@ -120,7 +114,7 @@ const SingleProductPage = (props) => {
                     {formatDate(product.updatedAt)}
                   </h1>
                 </div>
-                {product.createdBy !== user.userId && 
+                {product.createdBy._id !== user.userId && 
                 <div className="flex gap-4 mt-4">
                   <button onClick={addToCart} className="bg-cyan-500 mt-4 p-4 rounded-lg hover:bg-cyan-300 transition font-semibold text-xl">
                     Add To Cart
@@ -131,22 +125,16 @@ const SingleProductPage = (props) => {
                 </div>
                 }
               </div>
-              {product.createdBy === user.userId && 
+              {product.createdBy._id === user.userId && 
                 <div className="flex h-full mt-4">
                   <button onClick={handleClick} className="hover:bg-slate-600 w-10 h-10 flex items-center justify-center rounded-lg transition">
                     <IoSettingsOutline className="text-gray-200 w-7 h-7"/>
                   </button>
                 </div>}
-              
-              
             </div>
-            
-            
-            
           </div> : 
             <h1>Loading...</h1>
         }
-    
       </main>
     </div>
   )

@@ -11,7 +11,6 @@ const authMiddleware = async (req, res, next) => {
     const token = authHeader.split(" ")[1]
     const payload = jwt.verify(token, process.env.JWT_SECRET)
     const user = await User.findById(payload.userId)
-    console.log(user)
     req.user = { userId: payload.userId, name: user.name, email: user.email, role: user.role }
     next()
   } catch(err) {

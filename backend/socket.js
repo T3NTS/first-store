@@ -1,7 +1,8 @@
-const { saveMessage, getRoom } = require('./controllers/messages')
+const { saveMessage } = require('./controllers/messages')
 const Room = require('./models/Room')
 const socketio = require('socket.io')
 const crypto = require('crypto')
+const Message = require('./models/Message')
 
 let io
 
@@ -15,19 +16,20 @@ const initializeSocket = (server) => {
       pingInterval: 25000,
       pingTimeout: 5000
     })
+
     io.on('connect', (socket) => {
-      console.log(`User connected: ${socket.id}`);
-      console.log(`Total connected clients: ${io.sockets.sockets.size}`);
+      console.log(`User connected: ${socket.id}`)
+      console.log(`Total connected clients: ${io.sockets.sockets.size}`)
       socket.on('disconnect', () => {
-        console.log(`User disconnected: ${socket.id}`);
-        console.log(`Total connected clients: ${io.sockets.sockets.size}`);
+        console.log(`User disconnected: ${socket.id}`)
+        console.log(`Total connected clients: ${io.sockets.sockets.size}`)
       });
 
       socket.on('fetch_roomid', async ({ buyerId, productId, sellerId }, callback) => {
         try {
           const unhashed = `${buyerId}_${sellerId}_${productId}`
           const roomId = crypto.createHash('sha256').update(unhashed).digest('hex')
-          const room = await Room.findOne({ roomId })
+          const room = await Room.findOne({ roomId }).populate('lastMessageId')
             if (!room) {
               await Room.create({ buyerId, productId, sellerId, roomId })
             }
@@ -37,12 +39,23 @@ const initializeSocket = (server) => {
         }
       })
 
-      socket.on('join_room', async ({ roomId }) => {
+      socket.on('join_room', async ({ roomId, userId }) => {
         try {
           const room = await Room.findOne({ roomId })
-          socket.join(room.roomId)
+          await socket.join(room.roomId)
           console.log(`${socket.id} joined room: ${room.roomId}`);
-          socket.emit('joined_room', { roomId: room.roomId });
+          const unseenMessages = await Message.find({ roomId, createdBy: {$ne: userId}, seen: false });
+          if (unseenMessages) {
+            await Message.updateMany(
+              {
+                roomId,
+                createdBy: { $ne: userId },
+                seen: false
+              },
+              { $set: { seen: true } }
+            )
+            socket.to(roomId).emit('messages_seen')
+          }
         } catch (error) {
           console.error('Error in join_room:', error);
         }
@@ -50,9 +63,18 @@ const initializeSocket = (server) => {
 
       socket.on('send_message', async (data) => {
         try {
-          await saveMessage(data)
-          socket.to(data.roomId).emit('receive_message', data)
+          const message = await saveMessage(data)
+          socket.emit('receive_message', message)
+          socket.to(message.roomId).emit('receive_message', message)
         } catch(err) {
+          console.log(err)
+        }
+      })
+      socket.on('message_seen_live', async (data) => {
+        try {
+          await Message.findByIdAndUpdate(data._id, data)
+          socket.to(data.roomId).emit('messages_seen')
+        } catch (err) {
           console.log(err)
         }
       })

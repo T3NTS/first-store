@@ -14,16 +14,14 @@ import { UserProvider } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
 import { ProductsProvider } from './context/ProductsContext';
 
-//YOU HAVE A SHIT WAY OF DEALING WITH WEBSCOKET RN, ITS ALSO IN LOGINPAGE.JSX
 //THERSE security issues regards to storing sh in lcoalstorage
-//Double chat still aint solved
 function App() {
 //YOU NEED TO USE .POPULATE IN CART !!!!
 //USE lazy fetching when scrolling up in chat
 //Maybe make chats property more global as it always fetches all chats when moving to new chat
-//Also chats aint changin when a new message is sent!
 //Havent done shit with seen + 
-//change sort by updated not created
+//fix jwt expired
+//new ersolutions as well
  return (
     <UserProvider>
       <ProductsProvider>

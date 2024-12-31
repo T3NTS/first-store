@@ -6,8 +6,6 @@ import Filters from "../components/Filters";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import SortingButtons from "../components/SortingButtons";
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
-import { UserContext } from "../context/UserContext";
-import { CartContext } from "../context/CartContext";
 
 const HomePage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -19,14 +17,12 @@ const HomePage = () => {
     from: '',
     to: ''
   })
-  const { user, setUser } = useContext(UserContext)
-  const { cart } = useContext(CartContext)
 
   const [searchQuery, setSearchQuery] = useState({
     from: '',
     to: '',
     name: '',
-    sort: '-createdAt'
+    sort: '-updatedAt'
   })
 
   const getFilteredElements = async () => {
@@ -55,8 +51,8 @@ const HomePage = () => {
   }
 
   const sortElements = {
-    '-createdAt': <h3 className="text-gray-500">Newest</h3>,
-    'createdAt': <h3 className="text-gray-500">Oldest</h3>,
+    '-updatedAt': <h3 className="text-gray-500">Newest</h3>,
+    'updatedAt': <h3 className="text-gray-500">Oldest</h3>,
     'price': 
       <div className="flex items-center">
         <h3>Price</h3><FaLongArrowAltUp className="text-gray-500"/>
