@@ -23,7 +23,6 @@ const SingleChatPage = () => {
   const [hasMore, setHasMore] = useState(true)
   const [isVisible, setIsVisible] = useState(null)
   const observer = useRef(null)
-  const scrollRef = useRef(null)
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -126,10 +125,13 @@ const SingleChatPage = () => {
             flag: messages[0]
           }
         })
-        if (res.data.messages.length < 20) setHasMore(false)
-        if (res.data.messages.length > 0) {
-          setMessages(prev => [...res.data.messages, ...prev])
-        }
+        setTimeout(() => {
+          if (res.data.messages.length < 20) setHasMore(false)
+            if (res.data.messages.length > 0) {
+              setMessages(prev => [...res.data.messages, ...prev])
+            }
+        }, 500)
+        
       } catch (err) {
         console.log(err)
       }
@@ -151,11 +153,12 @@ const SingleChatPage = () => {
     if (!node) return
     if (loading) return
     if (observer.current) console.log(observer.current), observer.current.disconnect()
+    const scrollableElement = document.querySelector('.scrollableFeed')
     observer.current = new IntersectionObserver((entries) => {
       console.log(entries[0])
-      console.log('scrollref:', scrollRef)
+      console.log('scrollref:', scrollableElement)
       setIsVisible(entries[0].isIntersecting)
-    }, { rootMargin: '-10px' })
+    }, { root: scrollableElement, rootMargin: '600px' })
     observer.current.observe(node)
   }, [messages, isVisible])
 
@@ -203,9 +206,9 @@ const SingleChatPage = () => {
               <>
                 <ChatHeader key={roomId} chats={chats} roomId={roomId}/>
                 <div></div>
-                <div ref={scrollRef} className="max-h-[625px]">
-                  <ScrollableFeed className="flex-1 p-4 flex-col-reverse">
-                    {messages && 
+                <div className="max-h-[625px]">
+                  <ScrollableFeed className={`scrollableFeed flex-1 p-4 flex-col-reverse overflow-hidden`}>
+                    {messages &&
                       <Messages 
                         messages={messages} 
                         lastMessage={lastMessage}/>
