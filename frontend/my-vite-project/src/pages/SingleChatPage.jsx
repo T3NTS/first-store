@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState, useRef, useCallback } from "react"
 import Navbar from "../components/Navbar"
 import { IoMdSend } from "react-icons/io";
 import { useWebSocketContext } from "../context/WebSocketContext";
@@ -8,66 +8,82 @@ import ChatHeader from "../components/ChatHeader";
 import Messages from "../components/Messages";
 import { UserContext } from "../context/UserContext";
 import ChatSidebar from "../components/ChatSidebar";
+import ScrollableFeed from 'react-scrollable-feed'
 
 const SingleChatPage = () => {
   const { user } = useContext(UserContext)
-  const [buying, setBuying] = useState(true)
+  const [buying, setBuying] = useState(null)
   const [inputValue, setInputValue] = useState('')
   const [messages, setMessages] = useState([])
   const [chats, setChats] = useState(null)
   const socket = useWebSocketContext()
   const location = useLocation()
   const roomId = location.pathname.split('/')[4]
+  const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
+  const [isVisible, setIsVisible] = useState(null)
+  const observer = useRef(null)
+  const scrollRef = useRef(null)
 
   useEffect(() => {
-    //maybe theres an issue because you can use roomid from room.roomid but 
-    //could be issue with fetching timing etc
-    const fetchData = async () => {
+    const fetchChats = async () => {
+      const res = await axios.get(`http://localhost:5000/api/v1/chat/${user.userId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      console.log('chats:', res.data);
+      setChats(res.data);
+    }
+    if (user) {
+    fetchChats()
+    }
+  }, [user])
+
+  useEffect(() => {
+    const fetchMessages = async () => {
       console.log('fetching messages')
       try {
-        const [messagesRes, chatsRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/v1/chat/${user.userId}/${roomId}`, {
+          const res = await axios.get(`http://localhost:5000/api/v1/chat/${user.userId}/${roomId}`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          }),
-          axios.get(`http://localhost:5000/api/v1/chat/${user.userId}`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            params: {
+              limit: 20,
+              beforeMessageId: ''
             }
           })
-        ])
-        console.log('chats:', chatsRes.data);
-        console.log('messages:', messagesRes.data);
-        setChats(chatsRes.data);
-        setMessages(messagesRes.data.messages);
+          console.log('messages:', res.data)
+          setMessages(res.data.messages);
+          const currentChat = chats.find(chat => chat.roomId === roomId)
+          setBuying(currentChat.buyerId._id === user.userId)
+          setLoading(false)
       }
       catch(err){
         console.log(err)
+        setLoading(false)
       }
     }
-    if (user) {
-      fetchData()
+    if (user && chats) {
+      fetchMessages()
     }
-  }, [location.pathname, user])
+  }, [location.pathname, user, chats])
 
   useEffect(() => {
     if (socket) {
       const handleMessage = (message) => {
-        //maybe problem that user2 still has unseen that msg but idk
         if (message.createdBy !== user.userId) {
           socket.emit('message_seen_live', { ...message, seen: true })
         }
-          setMessages(prev => [...prev, message])
-          if (chats) {
-            setChats(prev => prev.map((chat) => {
-              return chat.roomId === message.roomId ? {
-                ...chat,
-                lastMessageId: { ...message }
-              } : chat
-            }))
-          }
-        
+        setMessages(prev => [...prev, message])
+        if (chats) {
+          setChats(prev => prev.map((chat) => {
+            return chat.roomId === message.roomId ? {
+              ...chat,
+              lastMessageId: { ...message }
+            } : chat
+          }))
+        }
       }
 
       const handleMessagesSeen = () => {
@@ -90,9 +106,39 @@ const SingleChatPage = () => {
       socket.on('receive_message', handleMessage)
       return () => {
         socket.off('receive_message', handleMessage)
+        socket.off('messages_seen', handleMessagesSeen)
       }
     }
   }, [socket, chats])
+
+  useEffect(() => {
+    if (!hasMore) setHasMore(true)
+  }, [location.pathname])
+
+  useEffect(() => {
+    const fetchOldMessages = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/v1/chat/${user.userId}/${roomId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          params: {
+            flag: messages[0]
+          }
+        })
+        if (res.data.messages.length < 20) setHasMore(false)
+        if (res.data.messages.length > 0) {
+          setMessages(prev => [...res.data.messages, ...prev])
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    console.log(hasMore)
+    if (messages.length >= 20 && hasMore && isVisible && !loading) {
+      fetchOldMessages()
+    }
+  }, [isVisible])
 
   useEffect(() => {
     if (socket) {
@@ -100,6 +146,18 @@ const SingleChatPage = () => {
       socket.emit('join_room', { roomId, userId: user.userId })
     }
   }, [socket])
+
+  const lastMessage = useCallback((node) => {
+    if (!node) return
+    if (loading) return
+    if (observer.current) console.log(observer.current), observer.current.disconnect()
+    observer.current = new IntersectionObserver((entries) => {
+      console.log(entries[0])
+      console.log('scrollref:', scrollRef)
+      setIsVisible(entries[0].isIntersecting)
+    }, { rootMargin: '-10px' })
+    observer.current.observe(node)
+  }, [messages, isVisible])
 
   const changeButton = (button) => {
     if (button === 'buy' && !buying) {
@@ -122,36 +180,45 @@ const SingleChatPage = () => {
       })
     }
   }
-
+  //do skeleteons later or reload wehleel
   return (
     <div className="flex flex-col items-center min-h-screen h-screen bg-slate-900">
       <Navbar/>
       <main className="flex flex-col mt-20 items-center p-8 h-full w-full px-48">
         <div className="flex h-full w-full gap-4">
-          {chats &&
+          { chats &&
             <ChatSidebar
-              key={chats}
+              key={roomId}
               changeButton={changeButton}
               buying={buying}
               chats={chats}
               pageLocation='SingleChatPage'
+              roomId={roomId}
             />
           }
           <div className="flex flex-col bg-slate-950 w-full h-full rounded-lg">
-            {chats &&
+            {loading ? (
+              <div className="text-4xl text-white">Loading...</div>
+            ) : (
               <>
                 <ChatHeader key={roomId} chats={chats} roomId={roomId}/>
-                <div className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: '625px' }}>
-                  {messages && 
-                    <Messages messages={messages}/>
-                  }
+                <div></div>
+                <div ref={scrollRef} className="max-h-[625px]">
+                  <ScrollableFeed className="flex-1 p-4 flex-col-reverse">
+                    {messages && 
+                      <Messages 
+                        messages={messages} 
+                        lastMessage={lastMessage}/>
+                      }
+                  </ScrollableFeed>
                 </div>
                 <div className="flex">
                 <input
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Write a message..." 
                   className="w-full h-14 bg-slate-800 rounded-bl-lg p-4 outline-none text-gray-400"
-                  value={inputValue}  
+                  value={inputValue}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()} 
                 />
                 <div className="flex items-center h-14 w-14 bg-slate-800 rounded-br-lg">
                 {inputValue &&
@@ -162,7 +229,7 @@ const SingleChatPage = () => {
                 </div>
                 </div>
               </>
-            }
+            )}
           </div>
         </div>
       </main>

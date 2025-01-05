@@ -15,8 +15,16 @@ const saveMessage = async (data) => {
 const getAllMessages = async (req, res, next) => {
   try {
     const { roomId } = req.params
-    const messages = await Message.find({ roomId }).sort({ createdAt: 1 })
-    res.status(200).json({ messages })
+    const { flag } = req.query
+    console.log('fetching messages')
+    console.log(flag)
+    const query = { roomId }
+    if (flag) {
+      query._id = { $lt: flag._id }
+    }
+    const messages = await Message.find(query).sort({ createdAt: -1 }).limit(20)
+    const sortedMessages = messages.reverse()
+    res.status(200).json({ messages: sortedMessages })
   } catch(err) {
     return next(err)
   }

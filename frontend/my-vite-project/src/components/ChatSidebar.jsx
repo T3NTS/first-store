@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react"
 import { UserContext } from "../context/UserContext"
 
 const ChatSidebar = (props) => {
-  const { changeButton, buying, chats, pageLocation } = props
+  const { changeButton, buying, chats, pageLocation, roomId } = props
   const { user } = useContext(UserContext)
   const location = useLocation()
 
@@ -23,7 +23,7 @@ const ChatSidebar = (props) => {
         I'm selling
       </button>
       </div>
-      <div key={chats} className="flex w-full flex-col">
+      <div className="flex w-full flex-col">
         <div className="border-gray-500 border-b w-full p-2 pl-4">
           <h3 className="font-bold text-gray-400">READ</h3>
         </div>
@@ -31,14 +31,14 @@ const ChatSidebar = (props) => {
           if (chat.buyerId._id === user.userId) {
             return (
               <Link to={pageLocation === 'ChatPage' ? `${location.pathname}/${chat.roomId}` : `/user/${user.userId}/chat/${chat.roomId}`}>
-                <ChatRoomCard key={chat.roomId} chat={chat}/>
+                <ChatRoomCard key={chat.roomId} chat={chat} isActive={chat.roomId === roomId}/>
               </Link>
             )}
           }) : chats.map((chat) => {
           if (chat.sellerId._id === user.userId) {
             return (
-              <Link to={pageLocation === 'ChatPage' ? `${location.pathname}/${chat.roomId}` : `/user/${user.userId}/chat/${chat.roomId}`}>
-                <ChatRoomCard key={chat.roomId} chat={chat}/>
+              <Link key={chat.roomId} to={pageLocation === 'ChatPage' ? `${location.pathname}/${chat.roomId}` : `/user/${user.userId}/chat/${chat.roomId}`}>
+                <ChatRoomCard chat={chat} isActive={chat.roomId === roomId}/>
               </Link>
             )}
           }

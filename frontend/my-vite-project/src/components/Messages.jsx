@@ -1,7 +1,8 @@
+import { useMemo } from "react"
 import MessageBox from "./MessageBox"
 
 const Messages = (props) => {
-  const { messages } = props
+  const { messages, lastMessage } = props
   return (
     messages.map((item, i) => {
       const date = new Date(item.createdAt)
@@ -14,7 +15,9 @@ const Messages = (props) => {
         item={item} 
         parsed={parsed}
         showTimestamp={showTimestamp}
+        lastMessage={i === 0 ? lastMessage : null}
       />
+      
     )})
   )
 }

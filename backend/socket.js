@@ -45,7 +45,7 @@ const initializeSocket = (server) => {
           await socket.join(room.roomId)
           console.log(`${socket.id} joined room: ${room.roomId}`);
           const unseenMessages = await Message.find({ roomId, createdBy: {$ne: userId}, seen: false });
-          if (unseenMessages) {
+          if (unseenMessages.length > 0) {
             await Message.updateMany(
               {
                 roomId,
@@ -54,6 +54,7 @@ const initializeSocket = (server) => {
               },
               { $set: { seen: true } }
             )
+            console.log('unseen msg:', unseenMessages)
             socket.to(roomId).emit('messages_seen')
           }
         } catch (error) {
@@ -64,6 +65,7 @@ const initializeSocket = (server) => {
       socket.on('send_message', async (data) => {
         try {
           const message = await saveMessage(data)
+          console.log('message sent:', data)
           socket.emit('receive_message', message)
           socket.to(message.roomId).emit('receive_message', message)
         } catch(err) {
@@ -72,6 +74,7 @@ const initializeSocket = (server) => {
       })
       socket.on('message_seen_live', async (data) => {
         try {
+          console.log('message seen live:', data)
           await Message.findByIdAndUpdate(data._id, data)
           socket.to(data.roomId).emit('messages_seen')
         } catch (err) {
