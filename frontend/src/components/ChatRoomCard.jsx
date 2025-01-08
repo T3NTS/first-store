@@ -28,13 +28,13 @@ const ChatRoomCard = (props) => {
         <h4 className="text-gray-400 m-0">{user.userId === chat.buyerId._id ? chat.sellerId.name : chat.buyerId.name}</h4>
         <h4 className="text-gray-400 font-bold m-0">{chat.productId.name}</h4>
         <div className="flex gap-1 items-center">
-          {lastMessageId.createdBy === user.userId &&
-            <IoMdCheckmarkCircle className={`h-4 w-4 ${lastMessageId.seen ? 'text-cyan-700' : 'text-gray-900'}`}/>
+          {lastMessageId?.createdBy === user.userId &&
+            <IoMdCheckmarkCircle className={`h-4 w-4 ${lastMessageId?.seen ? 'text-cyan-700' : 'text-gray-900'}`}/>
           }
-          <h4 className="text-gray-400 m-0">{lastMessageId.message}</h4>
+          <h4 className="text-gray-400 m-0">{lastMessageId?.message}</h4>
         </div>
       </div>
-      <h4 className="absolute top-0 right-0 text-gray-400 m-4">{getCorrectTime(lastMessageId.createdAt)}</h4>
+      <h4 className="absolute top-0 right-0 text-gray-400 m-4">{getCorrectTime(lastMessageId?.createdAt)}</h4>
     </div>
   )
 }

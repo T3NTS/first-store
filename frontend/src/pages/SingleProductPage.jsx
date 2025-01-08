@@ -71,10 +71,12 @@ const SingleProductPage = (props) => {
   return (
     <div className="flex flex-col min-h-screen bg-slate-900">
       <Navbar/>
-      <main className="flex justify-center mt-20 px-80">
+      <main className="flex justify-center mt-20 px-80 h-screen">
         {product ? 
-          <div className="flex flex-col bg-gray-800 mt-4 mb-4 p-4 rounded-xl w-full">
-            <img src={product.imageURL} className="object-cover w-full rounded-xl"/>
+          <div className="flex flex-col bg-gray-800 my-4 p-4 rounded-xl w-full ">
+            <div className="flex h-1/2 w-full bg-black ">
+              <img src={product.imageURL} className="object-scale-down w-full "/>
+            </div>
             <div className="flex flex-row justify-between w-full">
               <div>
                 <h2 className="text-gray-200 text-4xl mt-4 font-bold mb-4">

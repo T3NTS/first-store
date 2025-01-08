@@ -10,7 +10,7 @@ const initializeSocket = (server) => {
   if (!io) {
     io = socketio(server, {
       cors: {
-        origin: 'http://localhost:5173',
+        origin: 'http://localhost:5000',
         methods: ['GET', 'POST'],
       },
       pingInterval: 25000,

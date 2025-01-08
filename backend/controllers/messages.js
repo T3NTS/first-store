@@ -37,8 +37,8 @@ const getAllChats = async (req, res, next) => {
       $or: [{ buyerId: userId }, { sellerId: userId }]
     }).populate('productId').populate('buyerId').populate('sellerId').populate('lastMessageId')
     const sortedRooms = rooms.sort((a, b) => {
-      const dateA = a.lastMessageId?.createdAt || new Date[0]
-      const dateB = b.lastMessageId?.createdAt || new Date[0]
+      const dateA = a.lastMessageId?.createdAt || new Date()
+      const dateB = b.lastMessageId?.createdAt || new Date()
       return new Date(dateB) - new Date(dateA)
     })
     res.status(200).json(sortedRooms)

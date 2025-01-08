@@ -206,7 +206,7 @@ const SingleChatPage = () => {
               <>
                 <ChatHeader key={roomId} chats={chats} roomId={roomId}/>
                 <div></div>
-                <div className="max-h-[625px]">
+                <div className="h-[625px]">
                   <ScrollableFeed className={`scrollableFeed flex-1 p-4 flex-col-reverse overflow-hidden`}>
                     {messages &&
                       <Messages 

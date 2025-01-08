@@ -1,0 +1,17 @@
+{
+  "name": "hosting-first-store",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build": "cd frontend && npm run build",
+    "start-build": "cd frontend && npm run build && cd backend && npm start"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

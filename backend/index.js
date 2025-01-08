@@ -20,32 +20,28 @@ const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFoundMiddleware = require('./middleware/not-found')
 const authMiddleware = require('./middleware/authentication')
 
-//const __dirname = path.resolve();
-
 app.use(express.json())
 app.use(cors())
 
 initializeSocket(server)
 
-//app.use("/api/v1/auth", authRouter)
 app.use('/api/v1/products', productsRouter)
 app.use('/api/v1/protected/products', authMiddleware, protectedRouter)
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', authMiddleware, usersRouter)
 app.use('/api/v1/chat', authMiddleware, messagesRouter)
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "../frontend/dist")));
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
+	});
+}
+
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
 
 const port = process.env.PORT || 5000
-/*
-if (process.env.NODE_ENV === "production") {
-	console.log("HI")
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
-	app.get("*", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-	});
-}*/
 
 const start = async () => {
   try {
@@ -57,7 +53,6 @@ const start = async () => {
   } catch(err) {
     console.log(err)
   }
-
 }
 
 start()
